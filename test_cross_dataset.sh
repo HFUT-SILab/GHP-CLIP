@@ -29,7 +29,7 @@ for cls_id in "${!cls_ids[@]}";do
             --lvl_tilt 0.3 \
             --gamma_geo 0.2
             
-             CUDA_VISIBLE_DEVICES=${device} python test3.py --dataset eye_pc_3d_rgb  \
+             CUDA_VISIBLE_DEVICES=${device} python test.py --dataset eye_pc_3d_rgb  \
             --data_path /root/autodl-tmp/Eyecandies_processed \
             --save_path ./my_exp/${times}/exps_${base_dir}_336_4/${obj_list[cls_id]} \
             --checkpoint_path ${save_dir}/epoch_${epoch1}.pth \
