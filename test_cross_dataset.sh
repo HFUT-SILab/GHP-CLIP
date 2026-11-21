@@ -17,11 +17,22 @@ for cls_id in "${!cls_ids[@]}";do
         ## train on the VisA dataset
             base_dir=${depth[i]}_${n_ctx[j]}_${t_n_ctx[0]}_mv9_mvtec_3d
             save_dir=./my_exp/${times}/exps_${base_dir}_336_4/${obj_list[cls_id]}/weights/
+
+            CUDA_VISIBLE_DEVICES=${device} python train.py --dataset mvtec_pc_3d_rgb \
+            --train_data_path /root/autodl-tmp/mvtec_3d_anomaly_detection \
+            --save_path ${save_dir} \
+            --features_list 24 --image_size 336  --print_freq 1 \
+            --batch_size 4 \
+            --epoch ${epoch1} --save_freq 1 --depth ${depth[i]} --n_ctx ${n_ctx[j]} --t_n_ctx ${t_n_ctx[0]} \
+            --learning_rate 0.002 \
+            --train_dataset_name ${obj_list[cls_id]} \
+            --lvl_tilt 0.3 \
+            --gamma_geo 0.2
             
              CUDA_VISIBLE_DEVICES=${device} python test3.py --dataset eye_pc_3d_rgb  \
             --data_path /root/autodl-tmp/Eyecandies_processed \
             --save_path ./my_exp/${times}/exps_${base_dir}_336_4/${obj_list[cls_id]} \
-            --checkpoint_path ${save_dir}stage1/epoch_${epoch1}.pth \
+            --checkpoint_path ${save_dir}/epoch_${epoch1}.pth \
             --features_list 24 --image_size 336 --depth ${depth[i]} --n_ctx ${n_ctx[j]} --t_n_ctx ${t_n_ctx[0]} \
             --train_class ${obj_list[cls_id]} \
             --fusion_mode max \
