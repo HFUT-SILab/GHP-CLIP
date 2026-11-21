@@ -1,7 +1,6 @@
 #!/bin/bash
 device=0
 epoch1=15
-epoch2=10
 times=17
 
 obj_list=("carrot" "dowel" "cookie")
@@ -20,7 +19,7 @@ for cls_id in "${!cls_ids[@]}";do
 
             CUDA_VISIBLE_DEVICES=${device} python train.py --dataset mvtec_pc_3d_rgb \
             --train_data_path /root/autodl-tmp/mvtec_3d_anomaly_detection \
-            --save_path ${save_dir}stage1 \
+            --save_path ${save_dir} \
             --features_list 24 --image_size 336  --print_freq 1 \
             --batch_size 4 \
             --epoch ${epoch1} --save_freq 1 --depth ${depth[i]} --n_ctx ${n_ctx[j]} --t_n_ctx ${t_n_ctx[0]} \
@@ -30,11 +29,10 @@ for cls_id in "${!cls_ids[@]}";do
             --gamma_geo 0.2
             
 
-            CUDA_VISIBLE_DEVICES=${device} python test3.py --dataset mvtec_pc_3d_rgb \
+            CUDA_VISIBLE_DEVICES=${device} python test.py --dataset mvtec_pc_3d_rgb \
             --data_path /root/autodl-tmp/mvtec_3d_anomaly_detection \
             --save_path ./my_exp/${times}/exps_${base_dir}_336_4/${obj_list[cls_id]} \
-            --stage1_checkpoint_path ${save_dir}stage1/epoch_${epoch1}.pth \
-            --stage2_checkpoint_path ${save_dir}stage2/epoch_${epoch2}.pth \
+            --checkpoint_path ${save_dir}/epoch_${epoch1}.pth \
             --features_list 24 --image_size 336 --depth ${depth[i]} --n_ctx ${n_ctx[j]} --t_n_ctx ${t_n_ctx[0]} \
             --train_class ${obj_list[cls_id]} \
             --fusion_mode max \
@@ -59,11 +57,11 @@ for cls_id in "${!cls_ids[@]}";do
     for i in "${!depth[@]}";do
         for j in "${!n_ctx[@]}";do
             base_dir=${depth[i]}_${n_ctx[j]}_${t_n_ctx[0]}_mv9_eye_3d
-            save_dir=./my_exp/${times}/exps_${base_dir}_336_4/${obj_list[cls_id]}/weightss/
+            save_dir=./my_exp/${times}/exps_${base_dir}_336_4/${obj_list[cls_id]}/weights/
 
             CUDA_VISIBLE_DEVICES=${device} python train.py --dataset eye_pc_3d_rgb \
             --train_data_path /root/autodl-tmp/Eyecandies_processed \
-            --save_path ${save_dir}stage1 \
+            --save_path ${save_dir} \
             --features_list 24 --image_size 336  --print_freq 1 \
             --batch_size 4 \
             --epoch ${epoch1} --save_freq 1 --depth ${depth[i]} --n_ctx ${n_ctx[j]} --t_n_ctx ${t_n_ctx[0]} \
@@ -73,11 +71,10 @@ for cls_id in "${!cls_ids[@]}";do
             --gamma_geo 0.2
             
            
-            CUDA_VISIBLE_DEVICES=${device} python test3.py --dataset eye_pc_3d_rgb \
+            CUDA_VISIBLE_DEVICES=${device} python test.py --dataset eye_pc_3d_rgb \
             --data_path /root/autodl-tmp/Eyecandies_processed \
             --save_path ./my_exp/${times}/exps_${base_dir}_336_4/${obj_list[cls_id]} \
-            --stage1_checkpoint_path ${save_dir}stage1/epoch_${epoch1}.pth \
-            --stage2_checkpoint_path ${save_dir}stage2/epoch_${epoch2}.pth \
+            --checkpoint_path ${save_dir}/epoch_${epoch1}.pth \
             --features_list 24 --image_size 336 --depth ${depth[i]} --n_ctx ${n_ctx[j]} --t_n_ctx ${t_n_ctx[0]} \
             --train_class ${obj_list[cls_id]} \
             --fusion_mode max \
